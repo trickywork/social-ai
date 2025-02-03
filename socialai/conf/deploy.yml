@@ -1,0 +1,10 @@
+elasticsearch:
+    address: "http://34.59.131.46/:9200/"
+    username: "trickywork2"
+    password: "834338"
+
+gcs:
+    bucket: "jun-bucket"
+
+token:
+    secret: "secret"
