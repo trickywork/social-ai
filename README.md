@@ -1,38 +1,67 @@
 # SocialAI
 
-Go backend and compact web demo for the Social AI portfolio project. The deployment keeps a small API surface while running in low-cost demo mode on Cloud Run.
+SocialAI is a Go backend with a compact web demo for a social media search/upload project. The portfolio deployment runs in demo mode so it can be hosted cheaply on Cloud Run without Elasticsearch or Google Cloud Storage.
 
-## Live Service
+## Live Demo
 
+- Portfolio URL: `https://socialai.junliu.dev`
 - Cloud Run service: `socialai`
-- Current URL: `https://socialai-gb7rmueyna-uc.a.run.app`
-- GitHub trigger: `socialai-main-deploy`
+- Cloud Run URL: `https://socialai-888561484971.us-central1.run.app`
+- Google Cloud project: `caramel-vim-441513-e1`
+- Region: `us-central1`
 
-## Features
-
-- Signup and signin with JWT.
-- Upload a post with media.
-- Search posts by user or keywords.
-- Delete your own post.
-- Demo mode uses an in-memory backend so it does not require Elasticsearch or Google Cloud Storage.
-- Static web UI is served by the Go server for portfolio viewing.
+The custom domain mapping exists in Cloud Run. If the domain is still pending in Google Cloud Console, verify the Cloudflare DNS record and wait for the Google-managed certificate to finish provisioning.
 
 ## Tech Stack
 
 - Go
 - Gorilla Mux
-- JWT middleware
-- Elasticsearch and GCS adapters from the course project
-- In-memory demo backend for Cloud Run
+- JWT authentication
+- Multipart file upload
+- In-memory demo store
+- Elasticsearch adapter for full mode
+- Google Cloud Storage adapter for full mode
+- Docker, Google Cloud Build, Google Cloud Run
+- Postman collection for API testing
 
-## Local Run
+## Project Structure
+
+```text
+SocialAI/
+  socialai/
+    handler/
+    service/
+    model/
+    conf/
+    web/
+    Dockerfile
+  docs/
+    configuration.md
+  postman/
+    SocialAI.postman_collection.json
+  cloudbuild.yaml
+```
+
+## Features
+
+- Signup and signin.
+- JWT-protected routes.
+- Upload a post with text and media.
+- Search posts by username or keyword.
+- Delete a post owned by the current user.
+- Static web UI served by the Go server.
+- Demo mode that avoids external infrastructure.
+
+## Local Development
+
+Run in demo mode:
 
 ```bash
-cd socialai
+cd /Users/junliu/git_repo/SocialAI/socialai
 SOCIALAI_MODE=demo TOKEN_SECRET=dev-secret go run .
 ```
 
-Open:
+Expected local URL:
 
 ```text
 http://localhost:8080
@@ -44,45 +73,89 @@ Health check:
 curl http://localhost:8080/api/health
 ```
 
-## Tests
+Expected result:
 
-```bash
-cd socialai
-go test ./...
-go build ./...
+```json
+{"status":"ok"}
 ```
+
+## Environment Variables
+
+```env
+PORT=8080
+SOCIALAI_MODE=demo
+TOKEN_SECRET=dev-secret
+```
+
+Full mode also needs external service configuration in:
+
+```text
+socialai/conf/deploy.yml
+```
+
+The checked-in config uses placeholders. Do not commit real GCS, Elasticsearch, or credential values.
 
 ## API Endpoints
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/api/health` | No | Health check. |
-| POST | `/signup` | No | Register a user. |
-| POST | `/signin` | No | Sign in and return a JWT token. |
-| POST | `/upload` | Yes | Upload media and create a post. |
-| GET | `/search?user={username}` | Yes | Search posts by user. |
-| GET | `/search?keywords={text}` | Yes | Search posts by keywords. |
-| DELETE | `/post/{id}` | Yes | Delete one post owned by the signed-in user. |
+| `GET` | `/api/health` | No | Health check. |
+| `POST` | `/signup` | No | Register a user. |
+| `POST` | `/signin` | No | Sign in and return a JWT token. |
+| `POST` | `/upload` | Yes | Upload media and create a post. |
+| `GET` | `/search?user={username}` | Yes | Search posts by username. |
+| `GET` | `/search?keywords={text}` | Yes | Search posts by keywords. |
+| `DELETE` | `/post/{id}` | Yes | Delete a post owned by the signed-in user. |
 
-## API Testing
+## Postman
 
-Import `postman/SocialAI.postman_collection.json`.
+Import:
 
-The collection stores the signin token in a `token` collection variable.
+```text
+postman/SocialAI.postman_collection.json
+```
 
-## Configuration Notes
+Suggested variables:
 
-Non-code setup is documented in `docs/configuration.md`, including demo memory mode, full Elasticsearch/GCS mode, Secret Manager, and Cloud Run settings.
+```text
+baseUrl=http://localhost:8080
+token=
+```
 
-## Cloud Run Deployment
+The collection stores the signin token in a collection variable after a successful signin request.
 
-The repo includes `socialai/Dockerfile` and root `cloudbuild.yaml`.
+For Cloud Run:
 
-Manual deploy:
+```text
+baseUrl=https://socialai-888561484971.us-central1.run.app
+```
+
+## Tests And Build
 
 ```bash
-gcloud builds submit --config cloudbuild.yaml --project caramel-vim-441513-e1
+cd /Users/junliu/git_repo/SocialAI/socialai
+go test ./...
+go build ./...
 ```
+
+## Cloud Deployment
+
+Manual deployment:
+
+```bash
+cd /Users/junliu/git_repo/SocialAI
+gcloud builds submit \
+  --config cloudbuild.yaml \
+  --project caramel-vim-441513-e1
+```
+
+Cloud Run cost controls:
+
+- `min-instances=0`
+- `max-instances=1`
+- `SOCIALAI_MODE=demo`
+- no Elasticsearch VM
+- no GCS writes in demo mode
 
 Runtime settings:
 
@@ -91,13 +164,14 @@ SOCIALAI_MODE=demo
 TOKEN_SECRET=Secret Manager: socialai-token-secret
 ```
 
-Cost controls:
+## Expected Portfolio Behavior
 
-- Cloud Run `min-instances=0`.
-- Cloud Run `max-instances=1`.
-- No Elasticsearch VM in demo mode.
-- No GCS bucket writes in demo mode.
+A visitor should be able to open the demo UI, create an account, sign in, create a sample post, search posts, and delete their own post. In demo mode, data is temporary and resets when the Cloud Run instance restarts.
 
-## Full Course Mode
+## Additional Notes
 
-To run with Elasticsearch and GCS, set `SOCIALAI_MODE` to a non-demo value and configure `socialai/conf/deploy.yml`. The checked-in `deploy.yml` intentionally uses placeholders instead of real credentials.
+Configuration details are in:
+
+```text
+docs/configuration.md
+```
