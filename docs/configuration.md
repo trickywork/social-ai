@@ -26,7 +26,7 @@ TOKEN_SECRET=dev-secret
 Local run:
 
 ```bash
-cd /Users/junliu/git_repo/SocialAI/socialai
+cd SocialAI/socialai
 SOCIALAI_MODE=demo TOKEN_SECRET=dev-secret go run .
 ```
 
@@ -51,7 +51,7 @@ No local database is required. The in-memory maps store:
 
 Uploads are represented by metadata for portfolio testing; the demo avoids paid GCS writes.
 
-## Full Course Storage
+## Full Storage Mode
 
 Full mode reads:
 
@@ -81,7 +81,7 @@ Do not commit real Elasticsearch credentials, GCS credentials, or JWT secrets.
 Postman collection:
 
 ```text
-postman/SocialAI.postman_collection.json
+SocialAI - Portfolio API Smoke Tests
 ```
 
 Variables:

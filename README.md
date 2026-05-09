@@ -1,5 +1,7 @@
 # SocialAI
 
+[![CI](https://github.com/trickywork/social-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/trickywork/social-ai/actions/workflows/ci.yml)
+
 SocialAI is a Go backend with a compact web demo for a social media search/upload project. The portfolio deployment runs in demo mode so it can be hosted cheaply on Cloud Run without Elasticsearch or Google Cloud Storage.
 
 ## Live Demo
@@ -55,7 +57,7 @@ SocialAI/
 Run in demo mode:
 
 ```bash
-cd /Users/junliu/git_repo/SocialAI/socialai
+cd SocialAI/socialai
 SOCIALAI_MODE=demo TOKEN_SECRET=dev-secret go run .
 ```
 
@@ -113,7 +115,7 @@ Use the local Postman workspace collections:
 SocialAI Backend 01. Go Introduction
 SocialAI Backend 02. Elasticsearch
 SocialAI Backend 03. GCS
-202409 SocialAI - Coding Pad API Tests
+SocialAI - Portfolio API Smoke Tests
 ```
 
 Suggested variables:
@@ -131,16 +133,12 @@ For Cloud Run:
 baseUrl=https://socialai-gb7rmueyna-uc.a.run.app
 ```
 
-The repo-exported backup copy is stored outside GitHub at:
-
-```text
-/Users/junliu/CourseArtifacts/postman/project-exported/SocialAI.postman_collection.json
-```
+The exported backup copy is kept in a private local archive outside this public repo.
 
 ## Tests And Build
 
 ```bash
-cd /Users/junliu/git_repo/SocialAI/socialai
+cd SocialAI/socialai
 go test ./...
 go build ./...
 ```
@@ -150,7 +148,7 @@ go build ./...
 Manual deployment:
 
 ```bash
-cd /Users/junliu/git_repo/SocialAI
+cd SocialAI
 gcloud builds submit \
   --config cloudbuild.yaml \
   --project caramel-vim-441513-e1

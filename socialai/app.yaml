@@ -1,4 +1,4 @@
-# Legacy App Engine Flex config from the course material.
+# Legacy App Engine Flex config kept for reference.
 # The low-cost portfolio deployment uses Dockerfile + cloudbuild.yaml on Cloud Run.
 runtime: go
 env: flex
