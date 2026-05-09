@@ -6,7 +6,7 @@ SocialAI is a Go backend with a compact web demo for a social media search/uploa
 
 - Portfolio URL: `https://socialai.junliu.dev`
 - Cloud Run service: `socialai`
-- Cloud Run URL: `https://socialai-888561484971.us-central1.run.app`
+- Cloud Run URL: `https://socialai-gb7rmueyna-uc.a.run.app`
 - Google Cloud project: `caramel-vim-441513-e1`
 - Region: `us-central1`
 
@@ -127,7 +127,7 @@ The collection stores the signin token in a collection variable after a successf
 For Cloud Run:
 
 ```text
-baseUrl=https://socialai-888561484971.us-central1.run.app
+baseUrl=https://socialai-gb7rmueyna-uc.a.run.app
 ```
 
 ## Tests And Build
