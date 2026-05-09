@@ -22,7 +22,7 @@ The custom domain mapping exists in Cloud Run. If the domain is still pending in
 - Elasticsearch adapter for full mode
 - Google Cloud Storage adapter for full mode
 - Docker, Google Cloud Build, Google Cloud Run
-- Postman collection for API testing
+- API testing via local Postman workspace
 
 ## Project Structure
 
@@ -37,8 +37,6 @@ SocialAI/
     Dockerfile
   docs/
     configuration.md
-  postman/
-    SocialAI.postman_collection.json
   cloudbuild.yaml
 ```
 
@@ -109,10 +107,13 @@ The checked-in config uses placeholders. Do not commit real GCS, Elasticsearch, 
 
 ## Postman
 
-Import:
+Use the local Postman workspace collections:
 
 ```text
-postman/SocialAI.postman_collection.json
+SocialAI Backend 01. Go Introduction
+SocialAI Backend 02. Elasticsearch
+SocialAI Backend 03. GCS
+202409 SocialAI - Coding Pad API Tests
 ```
 
 Suggested variables:
@@ -128,6 +129,12 @@ For Cloud Run:
 
 ```text
 baseUrl=https://socialai-gb7rmueyna-uc.a.run.app
+```
+
+The repo-exported backup copy is stored outside GitHub at:
+
+```text
+/Users/junliu/CourseArtifacts/postman/project-exported/SocialAI.postman_collection.json
 ```
 
 ## Tests And Build
