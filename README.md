@@ -1,6 +1,6 @@
 # SocialAI
 
-Go backend and compact web demo for the LaiOffer Social AI project. The portfolio deployment keeps the course API shape while running in low-cost demo mode on Cloud Run.
+Go backend and compact web demo for the Social AI portfolio project. The deployment keeps a small API surface while running in low-cost demo mode on Cloud Run.
 
 ## Live Service
 
