@@ -70,6 +70,10 @@ Import `postman/SocialAI.postman_collection.json`.
 
 The collection stores the signin token in a `token` collection variable.
 
+## Configuration Notes
+
+Non-code setup is documented in `docs/configuration.md`, including demo memory mode, full Elasticsearch/GCS mode, Secret Manager, and Cloud Run settings.
+
 ## Cloud Run Deployment
 
 The repo includes `socialai/Dockerfile` and root `cloudbuild.yaml`.
