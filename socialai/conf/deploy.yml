@@ -1,10 +1,10 @@
 elasticsearch:
-    address: "http://34.59.131.46/:9200/"
-    username: "trickywork2"
-    password: "834338"
+    address: "http://YOUR_ELASTICSEARCH_HOST:9200/"
+    username: "YOUR_ELASTICSEARCH_USERNAME"
+    password: "YOUR_ELASTICSEARCH_PASSWORD"
 
 gcs:
-    bucket: "jun-bucket"
+    bucket: "YOUR_GCS_BUCKET"
 
 token:
-    secret: "secret"
+    secret: "change-me"

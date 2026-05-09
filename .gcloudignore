@@ -1,0 +1,6 @@
+.git
+.gitignore
+.DS_Store
+socialai/tmp
+socialai/node_modules
+socialai/socialai

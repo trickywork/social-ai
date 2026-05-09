@@ -48,6 +48,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Media file is not available %v\n", err)
 		return
 	}
+	defer file.Close()
 
 	suffix := filepath.Ext(header.Filename)
 	if t, ok := mediaTypes[suffix]; ok {
@@ -66,6 +67,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	//3. response
 	fmt.Println("Post is saved successfully.")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(p)
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
@@ -117,10 +120,12 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := backend.GCSBackend.DeleteFromGCS(id); err != nil {
-		http.Error(w, "Failed to delete post from GCS", http.StatusInternalServerError)
-		fmt.Printf("Failed to delete post from GCS %v\n", err)
-		return
+	if backend.GCSBackend != nil {
+		if err := backend.GCSBackend.DeleteFromGCS(id); err != nil {
+			http.Error(w, "Failed to delete post from GCS", http.StatusInternalServerError)
+			fmt.Printf("Failed to delete post from GCS %v\n", err)
+			return
+		}
 	}
 
 	fmt.Println("Post is deleted successfully")

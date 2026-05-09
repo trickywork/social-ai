@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SocialAI</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18202f;
+        --muted: #667085;
+        --line: #d8dee8;
+        --panel: #ffffff;
+        --surface: #f5f7fb;
+        --brand: #0f766e;
+        --brand-dark: #115e59;
+        --accent: #c2410c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--surface);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 340px minmax(0, 1fr);
+      }
+
+      aside {
+        min-height: 100vh;
+        padding: 24px;
+        color: #f8fafc;
+        background:
+          linear-gradient(rgba(12, 31, 43, 0.78), rgba(12, 31, 43, 0.78)),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900' viewBox='0 0 1200 900'%3E%3Crect width='1200' height='900' fill='%230f766e'/%3E%3Cpath d='M0 620C170 540 260 510 430 570c170 60 330 140 530 60 120-48 190-124 240-196v466H0z' fill='%23115e59'/%3E%3Cpath d='M120 160h220v150H120zM390 120h340v240H390zM780 180h260v180H780zM180 420h260v140H180zM520 430h380v170H520z' fill='%23f8fafc' fill-opacity='.16'/%3E%3Ccircle cx='960' cy='120' r='70' fill='%23f59e0b' fill-opacity='.8'/%3E%3C/svg%3E");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 44px;
+      }
+
+      .mark {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        color: #0f172a;
+        background: #f8fafc;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        font-size: 36px;
+        line-height: 1.05;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .aside-copy {
+        max-width: 260px;
+        margin-top: 14px;
+        color: #dbeafe;
+        line-height: 1.6;
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .status {
+        min-height: 22px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel,
+      .post {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 10px 11px;
+        color: var(--ink);
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 108px;
+        resize: vertical;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .row > * {
+        min-width: 0;
+      }
+
+      .row input {
+        flex: 1;
+      }
+
+      .btn {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 6px;
+        padding: 0 14px;
+        color: #fff;
+        background: var(--brand);
+        font-weight: 750;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        background: var(--brand-dark);
+      }
+
+      .btn.secondary {
+        color: var(--ink);
+        background: #e2e8f0;
+      }
+
+      .btn.secondary:hover {
+        background: #cbd5e1;
+      }
+
+      .btn.danger {
+        background: var(--accent);
+      }
+
+      .btn.danger:hover {
+        background: #9a3412;
+      }
+
+      .tabs {
+        display: inline-flex;
+        flex-shrink: 0;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .tab {
+        min-height: 34px;
+        border-radius: 6px;
+        padding: 0 12px;
+        color: var(--muted);
+        background: transparent;
+        font-weight: 750;
+      }
+
+      .tab.active {
+        color: #fff;
+        background: var(--brand);
+      }
+
+      .feed {
+        display: grid;
+        gap: 12px;
+      }
+
+      .post {
+        overflow: hidden;
+      }
+
+      .post-body {
+        padding: 14px;
+      }
+
+      .post-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .post p {
+        margin: 10px 0 0;
+        line-height: 1.5;
+      }
+
+      .media {
+        width: 100%;
+        max-height: 420px;
+        display: block;
+        object-fit: cover;
+        background: #e2e8f0;
+      }
+
+      .empty {
+        padding: 40px 18px;
+        color: var(--muted);
+        text-align: center;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          min-height: 260px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        main,
+        aside {
+          padding: 18px;
+        }
+
+        .topbar,
+        .row {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .tabs,
+        .btn {
+          width: 100%;
+        }
+
+        .tab {
+          flex: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <div class="brand">
+          <div class="mark">SA</div>
+          <strong>SocialAI</strong>
+        </div>
+        <h1>Share posts with media and search them instantly.</h1>
+        <p class="aside-copy">A compact Cloud Run demo of the course project: JWT auth, post upload, search, personal collection, and delete.</p>
+      </aside>
+
+      <main>
+        <div class="topbar">
+          <div>
+            <h2>Workspace</h2>
+            <div id="status" class="status">Create an account or sign in to start posting.</div>
+          </div>
+          <button id="logout" class="btn secondary hidden" type="button">Log out</button>
+        </div>
+
+        <div class="grid">
+          <section class="stack">
+            <div class="panel stack">
+              <h2>Account</h2>
+              <label>
+                Username
+                <input id="username" autocomplete="username" placeholder="junliu" />
+              </label>
+              <label>
+                Password
+                <input id="password" type="password" autocomplete="current-password" placeholder="Password" />
+              </label>
+              <div class="row">
+                <button id="signup" class="btn" type="button">Sign up</button>
+                <button id="signin" class="btn secondary" type="button">Sign in</button>
+              </div>
+            </div>
+
+            <div id="composer" class="panel stack hidden">
+              <h2>Create Post</h2>
+              <label>
+                Message
+                <textarea id="message" placeholder="What do you want to share?"></textarea>
+              </label>
+              <label>
+                Image or video
+                <input id="media" type="file" accept="image/*,video/*" />
+              </label>
+              <button id="upload" class="btn" type="button">Upload post</button>
+            </div>
+          </section>
+
+          <section class="stack">
+            <div class="panel stack">
+              <div class="row">
+                <div class="tabs" role="tablist" aria-label="Feed filter">
+                  <button id="allPosts" class="tab active" type="button">All</button>
+                  <button id="myPosts" class="tab" type="button">Mine</button>
+                </div>
+                <input id="keywords" placeholder="Search keywords" />
+                <button id="search" class="btn secondary" type="button">Search</button>
+              </div>
+            </div>
+            <div id="feed" class="feed"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const state = {
+        token: localStorage.getItem("socialai_token") || "",
+        username: localStorage.getItem("socialai_username") || "",
+        mode: "all",
+      };
+
+      const els = {
+        status: document.querySelector("#status"),
+        username: document.querySelector("#username"),
+        password: document.querySelector("#password"),
+        signup: document.querySelector("#signup"),
+        signin: document.querySelector("#signin"),
+        logout: document.querySelector("#logout"),
+        composer: document.querySelector("#composer"),
+        message: document.querySelector("#message"),
+        media: document.querySelector("#media"),
+        upload: document.querySelector("#upload"),
+        keywords: document.querySelector("#keywords"),
+        search: document.querySelector("#search"),
+        allPosts: document.querySelector("#allPosts"),
+        myPosts: document.querySelector("#myPosts"),
+        feed: document.querySelector("#feed"),
+      };
+
+      function setStatus(text, isError = false) {
+        els.status.textContent = text;
+        els.status.style.color = isError ? "#b91c1c" : "#667085";
+      }
+
+      function setSession(token, username) {
+        state.token = token;
+        state.username = username;
+        localStorage.setItem("socialai_token", token);
+        localStorage.setItem("socialai_username", username);
+        refreshSessionUI();
+      }
+
+      function clearSession() {
+        state.token = "";
+        state.username = "";
+        localStorage.removeItem("socialai_token");
+        localStorage.removeItem("socialai_username");
+        refreshSessionUI();
+      }
+
+      function refreshSessionUI() {
+        const signedIn = Boolean(state.token);
+        els.composer.classList.toggle("hidden", !signedIn);
+        els.logout.classList.toggle("hidden", !signedIn);
+        if (signedIn) {
+          els.username.value = state.username;
+          setStatus(`Signed in as ${state.username}.`);
+        }
+      }
+
+      async function request(path, options = {}) {
+        const headers = new Headers(options.headers || {});
+        if (state.token) {
+          headers.set("Authorization", `Bearer ${state.token}`);
+        }
+        const response = await fetch(path, { ...options, headers });
+        if (!response.ok) {
+          const detail = await response.text();
+          throw new Error(detail || response.statusText);
+        }
+        return response;
+      }
+
+      async function signup() {
+        const username = els.username.value.trim();
+        const password = els.password.value;
+        await request("/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        setStatus("Account created. Signing you in now...");
+        await signin();
+      }
+
+      async function signin() {
+        const username = els.username.value.trim();
+        const password = els.password.value;
+        const response = await request("/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        setSession(await response.text(), username);
+        await loadPosts();
+      }
+
+      async function uploadPost() {
+        const file = els.media.files[0];
+        if (!file) {
+          throw new Error("Choose an image or video first.");
+        }
+        const formData = new FormData();
+        formData.append("message", els.message.value.trim() || "New SocialAI post");
+        formData.append("media_file", file);
+        await request("/upload", { method: "POST", body: formData });
+        els.message.value = "";
+        els.media.value = "";
+        setStatus("Post uploaded.");
+        await loadPosts();
+      }
+
+      async function loadPosts() {
+        if (!state.token) {
+          renderPosts([]);
+          return;
+        }
+        const params = new URLSearchParams();
+        if (state.mode === "mine") {
+          params.set("user", state.username);
+        } else {
+          params.set("keywords", els.keywords.value.trim());
+        }
+        const response = await request(`/search?${params.toString()}`);
+        renderPosts(await response.json());
+      }
+
+      async function deletePost(id) {
+        await request(`/post/${id}`, { method: "DELETE" });
+        setStatus("Post deleted.");
+        await loadPosts();
+      }
+
+      function renderPosts(posts) {
+        els.feed.innerHTML = "";
+        if (!posts || posts.length === 0) {
+          els.feed.innerHTML = '<div class="empty">No posts yet.</div>';
+          return;
+        }
+        for (const post of posts) {
+          const article = document.createElement("article");
+          article.className = "post";
+          const media = post.type === "video"
+            ? `<video class="media" controls src="${post.url}"></video>`
+            : `<img class="media" alt="" src="${post.url}" />`;
+          const canDelete = post.user === state.username;
+          article.innerHTML = `
+            ${media}
+            <div class="post-body">
+              <div class="post-meta">
+                <strong>@${escapeHtml(post.user)}</strong>
+                ${canDelete ? `<button class="btn danger" data-delete="${post.id}" type="button">Delete</button>` : ""}
+              </div>
+              <p>${escapeHtml(post.message || "")}</p>
+            </div>
+          `;
+          els.feed.appendChild(article);
+        }
+      }
+
+      function escapeHtml(value) {
+        return value.replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;",
+        }[char]));
+      }
+
+      function wire(handler, label) {
+        return async (...args) => {
+          try {
+            await handler(...args);
+          } catch (error) {
+            setStatus(`${label}: ${error.message.trim()}`, true);
+          }
+        };
+      }
+
+      els.signup.addEventListener("click", wire(signup, "Sign up failed"));
+      els.signin.addEventListener("click", wire(signin, "Sign in failed"));
+      els.upload.addEventListener("click", wire(uploadPost, "Upload failed"));
+      els.search.addEventListener("click", wire(loadPosts, "Search failed"));
+      els.logout.addEventListener("click", () => {
+        clearSession();
+        renderPosts([]);
+        setStatus("Signed out.");
+      });
+      els.allPosts.addEventListener("click", () => {
+        state.mode = "all";
+        els.allPosts.classList.add("active");
+        els.myPosts.classList.remove("active");
+        loadPosts();
+      });
+      els.myPosts.addEventListener("click", () => {
+        state.mode = "mine";
+        els.myPosts.classList.add("active");
+        els.allPosts.classList.remove("active");
+        loadPosts();
+      });
+      els.feed.addEventListener("click", wire(async (event) => {
+        const button = event.target.closest("[data-delete]");
+        if (button) {
+          await deletePost(button.dataset.delete);
+        }
+      }, "Delete failed"));
+
+      refreshSessionUI();
+      loadPosts();
+    </script>
+  </body>
+</html>

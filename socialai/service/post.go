@@ -1,8 +1,13 @@
 package service
 
 import (
+	"encoding/base64"
+	"fmt"
+	"io"
 	"mime/multipart"
+	"net/http"
 	"reflect"
+	"strings"
 
 	"socialai/backend"
 	"socialai/constants"
@@ -12,6 +17,10 @@ import (
 )
 
 func SearchPostsByUser(user string) ([]model.Post, error) {
+	if backend.MemoryStore != nil {
+		return backend.MemoryStore.SearchPostsByUser(user), nil
+	}
+
 	query := elastic.NewTermQuery("user", user)
 	searchResult, err := backend.ESBackend.ReadFromES(query, constants.POST_INDEX)
 	if err != nil {
@@ -21,6 +30,10 @@ func SearchPostsByUser(user string) ([]model.Post, error) {
 }
 
 func SearchPostsByKeywords(keywords string) ([]model.Post, error) {
+	if backend.MemoryStore != nil {
+		return backend.MemoryStore.SearchPostsByKeywords(keywords), nil
+	}
+
 	query := elastic.NewMatchQuery("message", keywords)
 	query.Operator("AND")
 	if keywords == "" {
@@ -45,6 +58,20 @@ func getPostFromSearchResult(searchResult *elastic.SearchResult) []model.Post {
 }
 
 func SavePost(post *model.Post, file multipart.File) error {
+	if backend.MemoryStore != nil {
+		data, err := io.ReadAll(file)
+		if err != nil {
+			return err
+		}
+		contentType := http.DetectContentType(data)
+		if strings.HasPrefix(contentType, "application/octet-stream") && post.Type == "video" {
+			contentType = "video/mp4"
+		}
+		post.Url = fmt.Sprintf("data:%s;base64,%s", contentType, base64.StdEncoding.EncodeToString(data))
+		backend.MemoryStore.SavePost(post)
+		return nil
+	}
+
 	medialink, err := backend.GCSBackend.SaveToGCS(file, post.Id)
 	if err != nil {
 		return err
@@ -62,6 +89,10 @@ func SavePost(post *model.Post, file multipart.File) error {
 }
 
 func DeletePost(id string, user string) error {
+	if backend.MemoryStore != nil {
+		return backend.MemoryStore.DeletePost(id, user)
+	}
+
 	query := elastic.NewBoolQuery()
 	query.Must(elastic.NewTermQuery("id", id))
 	query.Must(elastic.NewTermQuery("user", user))

@@ -29,6 +29,11 @@ func InitRouter(config *util.TokenInfo) http.Handler {
 	router.Handle("/post/{id}", jwtMiddleware.Handler(http.HandlerFunc(deleteHandler))).Methods("DELETE")
 	router.Handle("/signup", http.HandlerFunc(signupHandler)).Methods("POST")
 	router.Handle("/signin", http.HandlerFunc(signinHandler)).Methods("POST")
+	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}).Methods("GET")
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("web")))
 
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	headersOk := handlers.AllowedHeaders([]string{"Authorization", "Content-Type"})

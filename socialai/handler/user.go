@@ -16,7 +16,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	//1. process http request: json string -> User struct
 	fmt.Println("Received one signin request")
 	w.Header().Set("Content-Type", "text/plain")
-	
+
 	//  Get User information from client
 	decoder := json.NewDecoder(r.Body)
 	var user model.User
@@ -39,7 +39,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("User doesn't exists or wrong password\n")
 		return
 	}
-	
+
 	//3. response： generate token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": user.Username,
@@ -69,7 +69,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Username == "" || user.Password == "" || regexp.MustCompile(`^[a-z0-9]$`).MatchString(user.Username) {
+	if user.Username == "" || user.Password == "" || !regexp.MustCompile(`^[A-Za-z0-9_-]{3,32}$`).MatchString(user.Username) {
 		http.Error(w, "Invalid username or password", http.StatusBadRequest)
 		fmt.Printf("Invalid username or password\n")
 		return

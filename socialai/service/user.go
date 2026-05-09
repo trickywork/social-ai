@@ -11,6 +11,10 @@ import (
 )
 
 func CheckUser(username, password string) (bool, error) {
+	if backend.MemoryStore != nil {
+		return backend.MemoryStore.CheckUser(username, password), nil
+	}
+
 	//1. Search ES by username, then compare passwords
 	//2. Search ES by username+password, TotalHit() > 0
 	query := elastic.NewBoolQuery()
@@ -33,6 +37,10 @@ func CheckUser(username, password string) (bool, error) {
 }
 
 func AddUser(user *model.User) (bool, error) {
+	if backend.MemoryStore != nil {
+		return backend.MemoryStore.AddUser(user), nil
+	}
+
 	//1. check whether username already existed
 	query := elastic.NewTermQuery("username", user.Username)
 	searchResult, err := backend.ESBackend.ReadFromES(query, constants.USER_INDEX)
@@ -43,7 +51,7 @@ func AddUser(user *model.User) (bool, error) {
 	if searchResult.TotalHits() > 0 {
 		return false, nil
 	}
-	
+
 	//2. if not exists, add user to ES
 	err = backend.ESBackend.SaveToES(user, constants.USER_INDEX, user.Username)
 	if err != nil {
